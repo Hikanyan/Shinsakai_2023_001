@@ -2,8 +2,6 @@ using System.Collections;
 using UnityEngine;
 using CriWare;
 using System;
-using System.Runtime.CompilerServices;
-using Unity.Burst.Intrinsics;
 
 public class CRIAudioManager : SingletonBehaviour<CRIAudioManager>
 {
