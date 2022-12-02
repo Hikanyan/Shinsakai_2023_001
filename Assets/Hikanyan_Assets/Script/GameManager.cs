@@ -4,5 +4,8 @@ using UnityEngine;
 
 public class GameManager : SingletonBehaviour<GameManager>
 {
-    
+    private void Start()
+    {
+        
+    }
 }
