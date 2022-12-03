@@ -16,6 +16,9 @@ public class PlayerController : MonoBehaviour
 
     Rigidbody _rb;
 
+    /// <summary>方向ベクトル </summary>
+    Vector3 _dir = new Vector3(0, 0, 0);
+
     /// <summary>前進入力の入力値を入れる変数</summary>
     float _horizontal;
 
@@ -29,6 +32,15 @@ public class PlayerController : MonoBehaviour
     }
     private void Update()
     {
-        
+        PlayerMove();
+    }
+
+    void PlayerMove()
+    {
+        //入力処理
+        _horizontal = Input.GetAxisRaw("Horizontal");
+        _vertical = Input.GetAxisRaw("Vertical");
+        //方向ベクトルを取得
+        _dir = new Vector3(_horizontal, 0, _vertical);
     }
 }
