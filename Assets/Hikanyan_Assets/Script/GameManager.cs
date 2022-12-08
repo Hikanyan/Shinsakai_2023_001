@@ -5,6 +5,11 @@ using UnityEngine;
 public class GameManager : SingletonBehaviour<GameManager>
 {
 
+
+    protected override void OnAwake()
+    {
+
+    }
     private void Start()
     {
         
