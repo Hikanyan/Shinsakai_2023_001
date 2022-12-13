@@ -1,15 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 public class GameManager : SingletonBehaviour<GameManager>
 {
-    [SerializeField] int maxScore = 99999999;
-    int score = 0;
-    [SerializeField] Text scoreText;
-    [SerializeField] float waitTime = 2;
-    [SerializeField] Text centerText;
-    
+
+    [SerializeField] int _maxScore = 99999999;
+    [SerializeField] Text _scoreText;
+    [SerializeField] float _waitTime = 2;
+    [SerializeField] Text _centerText;
     
     bool _gameStart = false;
     bool _gameOver = false;
@@ -20,7 +20,7 @@ public class GameManager : SingletonBehaviour<GameManager>
     }
     private void Start()
     {
-        
+
     }
 
     public IEnumerator GameStart()
