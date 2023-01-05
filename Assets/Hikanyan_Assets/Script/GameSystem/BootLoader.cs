@@ -1,8 +1,9 @@
+using Hikanyan.Runner;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Gameplay
+namespace Hikanyan.Gameplay
 {
     public class BootLoader : MonoBehaviour
     {
@@ -13,5 +14,6 @@ namespace Gameplay
             Instantiate(_sequenceManagerPrefab);
             SequenceManager.Instance.Initialize();
         }
+    }
 }
 

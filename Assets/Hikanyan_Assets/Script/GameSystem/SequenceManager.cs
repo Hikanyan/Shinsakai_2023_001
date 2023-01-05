@@ -1,27 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using Hikanyan.Core;
 
-public class SequenceManager : SingletonBehaviour<SequenceManager>
+namespace Hikanyan.Runner
 {
-    [SerializeField]
-    GameObject[] _preloadedAssets;
-
-
-
-    public void Initialize()
+    public class SequenceManager : SingletonBehaviour<SequenceManager>
     {
-        InstantiatePreloadedAssets();
-    }
+        [SerializeField]
+        GameObject[] _preloadedAssets;
 
-    /// <summary>
-    /// PreloadedAssetsを全てインスタンス化
-    /// </summary>
-    void InstantiatePreloadedAssets()
-    {
-        foreach(var asset in _preloadedAssets)
+        SceneController _sceneController;
+
+        public void Initialize()
         {
-            Instantiate(asset);
+
+            InstantiatePreloadedAssets();
+        }
+
+        /// <summary>
+        /// PreloadedAssetsを全てインスタンス化
+        /// </summary>
+        void InstantiatePreloadedAssets()
+        {
+            foreach (var asset in _preloadedAssets)
+            {
+                Instantiate(asset);
+            }
         }
     }
 }
