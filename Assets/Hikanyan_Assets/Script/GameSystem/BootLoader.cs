@@ -7,7 +7,7 @@ namespace Hikanyan.Gameplay
 {
     public class BootLoader : MonoBehaviour
     {
-        [SerializeField]
+        [SerializeField,Tooltip("SequenceManagerPrefab‚ð“ü‚ê‚é")]
         SequenceManager _sequenceManagerPrefab;
         void Start()
         {

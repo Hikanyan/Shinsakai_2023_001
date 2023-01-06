@@ -3,19 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Hikanyan.Core;
+using System;
 
 namespace Hikanyan.Runner
 {
+    //[Serializable]
     public class SequenceManager : SingletonBehaviour<SequenceManager>
     {
-        [SerializeField]
+        [SerializeField,Tooltip("Singleton‚ğg‚¤Manager‚ğ“ü‚ê‚é")]
         GameObject[] _preloadedAssets;
+        [SerializeField,Tooltip("")]
+
 
         SceneController _sceneController;
 
+        /// <summary>
+        /// ‰Šú‰»
+        /// </summary>
         public void Initialize()
         {
-
+            _sceneController = new SceneController(SceneManager.GetActiveScene());
             InstantiatePreloadedAssets();
         }
 
