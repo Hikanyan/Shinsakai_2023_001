@@ -3,63 +3,44 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
-public class GameManager : SingletonBehaviour<GameManager>
+using UniRx;
+using Cysharp.Threading.Tasks;
+using Hikanyan.Core;
+using System.Threading.Tasks;
+
+//UniRxは「非同期処理」と「イベント処理」の2つを扱うことができるライブラリです。
+//特に「時間」の扱いに長けており、Unityにおける「フレームをまたいだ処理」などの実装が簡単になります。
+//UniTaskは非同期処理の結果通知が「1回」で済む場合
+//結果通知が1回である、つまりは単発で完了する普通の非同期処理の場合です。
+//こちらはUniTask（とasync / await）を使うべきです。
+namespace Hikanyan.Runner
 {
-
-    [SerializeField] int _maxScore = 99999999;
-    [SerializeField] Text _scoreText;
-    [SerializeField] float _waitTime = 2;
-    [SerializeField] Text _centerText;
-    
-    bool _gameStart = false;
-    bool _gameOver = false;
-    int _score = 0;
-    protected override void OnAwake()
+    public class GameManager : AbstractSingleton<GameManager>
     {
-
-    }
-    private void Start()
-    {
-
-    }
-
-    public IEnumerator GameStart()
-    {
-        yield return new WaitForSeconds(_waitTime);
-        _centerText.enabled = true;
-        _centerText.text = "3";
-        yield return new WaitForSeconds(1);
-        _centerText.text = "2";
-        yield return new WaitForSeconds(1);
-        _centerText.text = "1";
-        yield return new WaitForSeconds(1);
-        _centerText.text = "GO!!";
-        yield return new WaitForSeconds(1);
-        _centerText.text = "";
-        _centerText.enabled = false;
-    }
-    public IEnumerator GameOver()
-    {
-        _gameOver = true;
-        _centerText.enabled = true;
-        _centerText.text = "Game Over";
-        yield return new WaitForSeconds(_waitTime);
-        _centerText.text = "";
-        _centerText.enabled = false;
-        _gameOver = false;
-    }
-
-    public int Score
-    {
-        set
+        public bool GameTitle = false;
+        public bool GameStart = false;
+        public bool GameEnd = false;
+        public bool GameClear = false;
+        public bool GameOver = false;
+        protected override void OnAwake()
         {
-            _score = Mathf.Clamp(value, 0, _maxScore);
-            _scoreText.text = _score.ToString("D8");
+            TitleGame();
+            StartGame();
+            Debug.Log("neko");
         }
-        get
-        {
-            return _score;
-        }
-    }
 
+        async Task TitleGame()
+        {
+            await UniTask.WaitUntil(() => GameTitle);
+
+            CRIAudioManager.Instance.CRILoopBGM(1,true);
+        }
+        async Task StartGame()
+        {
+            await UniTask.WaitUntil(() => GameStart);
+            Debug.Log("InGame");
+            LoadSceneManager.Instance.LoadSeneManager("InGame");
+        }
+
+    }
 }

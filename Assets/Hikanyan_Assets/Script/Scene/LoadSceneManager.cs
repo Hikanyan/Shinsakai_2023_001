@@ -4,11 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System;
+using Hikanyan.Core;
 
-public class LoadSceneManager : SingletonBehaviour<LoadSceneManager>
+public class LoadSceneManager : AbstractSingleton<LoadSceneManager>
 {
     private AsyncOperation _async;
-    void LoadSeneManager(string sceneName)
+    public void LoadSeneManager(string sceneName)
     {
         _async = SceneManager.LoadSceneAsync(sceneName);
     }

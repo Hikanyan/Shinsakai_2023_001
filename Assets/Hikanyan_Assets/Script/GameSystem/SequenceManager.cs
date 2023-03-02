@@ -8,7 +8,7 @@ using System;
 namespace Hikanyan.Runner
 {
     //[Serializable]
-    public class SequenceManager : SingletonBehaviour<SequenceManager>
+    public class SequenceManager : AbstractSingleton<SequenceManager>
     {
         [SerializeField,Tooltip("Singletonを使うManagerを入れる")]
         GameObject[] _preloadedAssets;
@@ -22,6 +22,7 @@ namespace Hikanyan.Runner
         /// </summary>
         public void Initialize()
         {
+            //現在のSceneをアンロードしない
             _sceneController = new SceneController(SceneManager.GetActiveScene());
             InstantiatePreloadedAssets();
         }

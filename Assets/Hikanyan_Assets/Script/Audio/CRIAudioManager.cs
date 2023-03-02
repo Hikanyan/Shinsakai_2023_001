@@ -2,8 +2,9 @@ using System.Collections;
 using UnityEngine;
 using CriWare;
 using System;
+using Hikanyan.Core;
 
-public class CRIAudioManager : SingletonBehaviour<CRIAudioManager>
+public class CRIAudioManager : AbstractSingleton<CRIAudioManager>
 {
     [SerializeField] string _streamingAssetsPathACF;//.acf
     [SerializeField] string _cueSheetBGM;//.acb
@@ -87,7 +88,12 @@ public class CRIAudioManager : SingletonBehaviour<CRIAudioManager>
         CRIPlayBGM(index);
     }
 
-    public void CRILoopBGM(bool isTrue) => _criAtomSourceBGM.loop = isTrue;
+    public void CRILoopBGM(int index, bool isTrue)
+    {
+        _criAtomSourceBGM.loop = isTrue;
+        CRIPlayBGM(index);
+    }
+
     public void CRIPauseAudio() => _criAtomSourceBGM.Pause(true);
     public void CRIResume() => _criAtomSourceBGM.Pause(false);
     public void CRIPlaySE(int index, bool isLoop)

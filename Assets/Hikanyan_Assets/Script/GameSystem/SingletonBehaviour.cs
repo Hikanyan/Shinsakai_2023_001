@@ -1,67 +1,57 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
-using System;
 
-//メモ
-//シングルトンはグローバルなアクセスポイントを提供するもの
-//インスペクターで値をいじらなくていいものでシングルトンを作る場合はMonoBehaviorを継承しなくてもいい
-//Monobehaviourを継承する必要がないならstatucクラスでもシングルトンとあまり変わらない
-//->それによるメリット:SingletonBehaviorクラスとの結合が回避できてnullになることがなくエラーが起こっても対処しやすい
-//->デメリット:変数の値を手動で初期化しなければならない。Textureなどのリソースへの参照を持つ場合Nullを入れないと解放されない
-
-public class SingletonBehaviour<T> : MonoBehaviour where T : MonoBehaviour
+namespace Hikanyan.Core
 {
-    protected static T _instance;
-
-    //カプセル化
-    //public static T Instance => _instance;
-
-    public static T Instance
+    public abstract class AbstractSingleton<T> : MonoBehaviour where T : Component
     {
-        get
+        /// <summary>
+        /// static Singleton instance
+        /// </summary>
+        static T _Instance;
+
+        public static T Instance
         {
-            if (_instance == null)
+            get
             {
-                Type t = typeof(T);
-                _instance = (T)FindObjectOfType(t);
-
-                if (_instance == null)
+                if (_Instance == null)
                 {
-                    Debug.LogError($"{t}をアタッチしているGameObjectがありません");
+                    Type t = typeof(T);
+                    _Instance = (T)FindObjectOfType(t);
+                    if (_Instance != null)
+                    {
+                        Debug.LogError($"{t}をアタッチしているGameObjectがありません。");
+                        GameObject obj = new GameObject();
+                        obj.name = t.Name;
+                        _Instance = obj.AddComponent<T>();
+                        Debug.LogError($"{t}をアタッチしているGameObject {obj.name} を作成しました。");
+                    }
                 }
+                return _Instance;
             }
-
-            return _instance;
         }
-    }
-
-    protected virtual void Awake()
-    {
-        OnAwake();
-        ChackIns();
-    }
-
-
-    //継承先でAwakeが必要な場合はこれを呼ぶ
-    protected virtual void OnAwake() { }
-
-    protected void ChackIns()
-    {
-        if (_instance == null)
+        protected virtual void Awake()
         {
-            //キャストの意味を理解する。T型にキャストしている
-            _instance = this as T;
+            ChackIn();
+            OnAwake();
         }
-        else if (Instance == this)
+        protected void ChackIn()
         {
-            return;
+            if (_Instance == null)
+            {
+                _Instance = this as T;
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
         }
-        else if (Instance != this)
-        {
-            //すでにあった時は何もせずに消える
-            Destroy(this);
-        }
+        /// <summary>
+        /// 継承先でAwakeが必要な場合
+        /// </summary>
+        protected virtual void OnAwake() { }
     }
-
 }
