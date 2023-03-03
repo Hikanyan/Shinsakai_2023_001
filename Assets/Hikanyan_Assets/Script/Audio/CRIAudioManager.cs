@@ -3,6 +3,7 @@ using UnityEngine;
 using CriWare;
 using System;
 using Hikanyan.Core;
+using System.Collections.Generic;
 
 public class CRIAudioManager : AbstractSingleton<CRIAudioManager>
 {
@@ -20,7 +21,6 @@ public class CRIAudioManager : AbstractSingleton<CRIAudioManager>
     CriAtomSource _criAtomSourceSE;
 
     int _cueIndexID;
-
     protected override void OnAwake()
     {
         //acf
@@ -55,6 +55,7 @@ public class CRIAudioManager : AbstractSingleton<CRIAudioManager>
 
     public void CRIPlayBGM(int index)
     {
+        if (index==-1) return;//Test
         bool startFlag = false;
         CriAtomSource.Status status = _criAtomSourceBGM.status;
         if ((status == CriAtomSource.Status.Stop) || (status == CriAtomSource.Status.PlayEnd))
@@ -96,8 +97,13 @@ public class CRIAudioManager : AbstractSingleton<CRIAudioManager>
 
     public void CRIPauseAudio() => _criAtomSourceBGM.Pause(true);
     public void CRIResume() => _criAtomSourceBGM.Pause(false);
+    public void CRIPlaySE(int soundID)
+    {
+        CRIPlaySE(soundID,false);
+    }
     public void CRIPlaySE(int index, bool isLoop)
     {
+        if (index == -1) return;
         _criAtomSourceSE.loop = isLoop;
         this._criAtomExPlayback = _criAtomSourceSE.Play(index);
     }

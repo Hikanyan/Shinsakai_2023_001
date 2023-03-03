@@ -1,54 +1,96 @@
+using Hikanyan.Core;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class UIManager : SingletonBehaviour<UIManager>
+namespace Hikanyan.Core
 {
-    public Canvas UIManagerCanvas;
-    private UIManager() { }
-    public List<BasePanel> basePanelPrefabList;
-    Dictionary<Type, BasePanel> panelMap = new Dictionary<Type, BasePanel>();
-    // Use this for initialization
-    void Awake()
+    /// <summary>
+    /// A singleton that manages display state and access to UI Views 
+    /// </summary>
+    public class UIManager : AbstractSingleton<UIManager>
     {
-        foreach (var panelPrefab in basePanelPrefabList)
+        [SerializeField]
+        Canvas _canvas;
+        [SerializeField]
+        RectTransform _root;
+        [SerializeField]
+        RectTransform _backgroundLayer;
+        [SerializeField]
+        RectTransform _viewLayer;
+
+        List<View> _views;
+
+        View _currentView;
+
+        readonly Stack<View> _history = new();
+
+        void Start()
         {
-            if (panelPrefab)
+            _views = _root.GetComponentsInChildren<View>(true).ToList();
+            Init();
+
+            //_viewLayer.ResizeToSafeArea(_canvas);
+        }
+
+        void Init()
+        {
+            foreach (var view in _views)
+                view.Hide();
+            _history.Clear();
+        }
+
+        public T GetView<T>() where T : View
+        {
+            foreach (var view in _views)
             {
-                var panel = Instantiate(panelPrefab, UIManagerCanvas.transform, false);
-                panelMap.Add(panel.GetType(), panel);
-                panel.HidePanel();
+                if (view is T tView)
+                {
+                    return tView;
+                }
+            }
+
+            return null;
+        }
+
+        public void Show<T>(bool keepInHistory = true) where T : View
+        {
+            foreach (var view in _views)
+            {
+                if (view is T)
+                {
+                    Show(view, keepInHistory);
+                    break;
+                }
             }
         }
-    }
 
-    public BasePanel GetPanel<t>() where t : BasePanel
-    {
-        return panelMap[typeof(t)];
-    }
-
-    public void ShowPanel<t>() where t : BasePanel
-    {
-        panelMap[typeof(t)].ShowPanel();
-    }
-
-    public void HidePanel<t>() where t : BasePanel
-    {
-        panelMap[typeof(t)].HidePanel();
-    }
-
-    public void TogglePanel<t>() where t : BasePanel
-    {
-        panelMap[typeof(t)].TogglePanel();
-    }
-
-    public void HideAllPanels()
-    {
-        foreach (var panel in panelMap)
+        
+        public void Show(View view, bool keepInHistory = true)
         {
-            panel.Value.HidePanel();
+            if (_currentView != null)
+            {
+                if (keepInHistory)
+                {
+                    _history.Push(_currentView);
+                }
+
+                _currentView.Hide();
+            }
+
+            view.Show();
+            _currentView = view;
+        }
+
+        public void GoBack()
+        {
+            if (_history.Count != 0)
+            {
+                Show(_history.Pop(), false);
+            }
         }
     }
 }
